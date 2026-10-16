@@ -114,8 +114,8 @@ fn read_bounded(path: &Path, limit: usize) -> Result<Vec<u8>> {
 
 fn main() -> Result<()> {
     let cli = Cli::parse();
-    let anchor = Hash256::from_hex(&cli.anchor)
-        .context("anchor must be an exact 32-byte hex block hash")?;
+    let anchor =
+        Hash256::from_hex(&cli.anchor).context("anchor must be an exact 32-byte hex block hash")?;
     let receipt: PaymentReceipt =
         serde_json::from_slice(&read_bounded(&cli.receipt, MAX_RECEIPT_BYTES)?)
             .context("invalid receipt JSON")?;
@@ -126,7 +126,10 @@ fn main() -> Result<()> {
     println!("RECEIPT + ANCHORED BLOCK BODY: VERIFIED");
     println!("receipt version .... {}", evidence.receipt.version);
     println!("kind ............... {}", evidence.receipt.kind.as_str());
-    println!("opened amount ...... {} darks", evidence.receipt.amount_darks);
+    println!(
+        "opened amount ...... {} darks",
+        evidence.receipt.amount_darks
+    );
     println!("block height ....... {}", evidence.receipt.height);
     println!("block hash ......... {}", evidence.block_hash);
     println!("output index ....... {}", evidence.output_index);
@@ -143,9 +146,7 @@ fn main() -> Result<()> {
 mod tests {
     use super::*;
     use nightfall_consensus::BlockHeader;
-    use nightfall_crypto::{
-        generator_g, hash_multi, scan_output, Commitment, WalletKeys,
-    };
+    use nightfall_crypto::{generator_g, hash_multi, scan_output, Commitment, WalletKeys};
     use nightfall_ledger::{build_coinbase, BlockBody};
     use nightfall_types::{Height, NetworkId, DARKS_PER_NIGHT, PROTOCOL_VERSION};
 
@@ -165,8 +166,7 @@ mod tests {
             ],
         )
         .0;
-        let signature =
-            nightfall_crypto::sig::sign(&keys.spend_secret(), &generator_g(), &msg);
+        let signature = nightfall_crypto::sig::sign(&keys.spend_secret(), &generator_g(), &msg);
         receipt.sig_r = hex::encode(signature.r);
         receipt.sig_s = hex::encode(signature.s);
     }
@@ -236,7 +236,10 @@ mod tests {
         assert!(verify_anchored(&receipt, &tampered, tampered.hash()).is_err());
 
         let mut duplicate = block.clone();
-        duplicate.body.outputs.push(duplicate.body.outputs[0].clone());
+        duplicate
+            .body
+            .outputs
+            .push(duplicate.body.outputs[0].clone());
         duplicate.header.body_root = duplicate.body.hash();
         assert!(verify_anchored(&receipt, &duplicate, duplicate.hash()).is_err());
 
