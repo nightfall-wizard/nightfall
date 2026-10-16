@@ -85,10 +85,8 @@ fn verify_anchored(
     let target = hex::decode(&receipt.commit).context("receipt commitment hex")?;
     let mut index = None;
     for (i, output) in block.body.outputs.iter().enumerate() {
-        if output.commit.0.as_slice() == target.as_slice() {
-            if index.replace(i).is_some() {
-                bail!("duplicate output commitment in supplied block");
-            }
+        if output.commit.0.as_slice() == target.as_slice() && index.replace(i).is_some() {
+            bail!("duplicate output commitment in supplied block");
         }
     }
     let output_index = index.context("receipt commitment absent from block outputs")?;
