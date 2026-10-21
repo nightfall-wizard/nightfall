@@ -106,7 +106,7 @@ class IndependentBuildTests(unittest.TestCase):
             if args[1:] == ["status", "--porcelain", "--untracked-files=normal"]:
                 return ""
             if args == ["rustc", "-vV"]:
-                return "rustc 1.96.0 (mock)\\nhost: aarch64-linux-android"
+                return "rustc 1.96.0 (mock)\nhost: aarch64-linux-android"
             if args == ["cargo", "--version"]:
                 return "cargo 1.96.0 (mock)"
             raise AssertionError(args)
@@ -130,7 +130,7 @@ class IndependentBuildTests(unittest.TestCase):
                 repo = self.folder / "repo"
                 repo.mkdir(exist_ok=True)
                 (repo / "Cargo.lock").write_bytes(b"test lock")
-                with patch.object(mod, "command", side_effect=["a" * 64, "", "rustc 1.96.0 (mock)\\nhost: aarch64-linux-android", "cargo 1.96.0 (mock)"]):
+                with patch.object(mod, "command", side_effect=["a" * 64, "", "rustc 1.96.0 (mock)\nhost: aarch64-linux-android", "cargo 1.96.0 (mock)"]):
                     with self.assertRaises(mod.BuildEvidenceError):
                         mod.record(repo, bad)
 
